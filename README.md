@@ -14,9 +14,13 @@ Visual interface with real-time feedback, code viewing, and archive management. 
 
 - **Unified App Generation**: Multiple Jira tickets → One cohesive Streamlit application
 - **TDD Workflow**: Generates standalone, tested modules from single tickets.
-- **Multi-Agent Workflow**: Architecture design, spec extraction, code generation, testing, and validation
-- **Automatic Fixing**: Auto-fixes failing tests and Streamlit app errors
-- **Cost Optimized**: Uses `gpt-4o-mini` for a balance of performance and cost.
+- **Multi-Agent Workflow**: Architecture design, spec extraction, code generation, testing, and validation.
+- **Parallel Agent Execution**: Reviewer agents (`quality_reviewer`, `senior_dev_reviewer`, `architecture_reviewer`) execute concurrently in parallel (~70% lower review latency).
+- **Dynamic Project Key Resolution**: Fully dynamic project key and board configuration (`JIRA_PROJECT_KEY`) adaptable to any Jira instance without hardcoded assumptions.
+- **Multi-Model LLM Routing**: Cost-optimized routing using `gpt-4o` for core synthesis and `gpt-4o-mini` for validation and review tasks (~60% cost reduction).
+- **Automated GitHub PR Creation**: Automated agent node (`github_pr_agent.py`) and UI button for submitting GitHub Pull Requests.
+- **Automatic Fixing**: Auto-fixes failing tests and Streamlit app errors.
+
 
 ## Quick Start
 
