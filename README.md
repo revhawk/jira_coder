@@ -28,23 +28,22 @@ pip install -r requirements.txt
 
 ### 2. Configure Environment
 
-Create `.env` file with:
+Create `.env` file with your Jira and OpenAI credentials:
 
 ```bash
 # Jira Configuration
-JIRA_BASE=https://your-domain.atlassian.net
+JIRA_BASE=https://reg-hawkins.atlassian.net
 JIRA_EMAIL=your-email@example.com
 JIRA_API_TOKEN=your_jira_api_token
-JIRA_PROJECT_KEY=CAL
-JIRA_BOARD_ID=34
+JIRA_PROJECT_KEY=KAN
+JIRA_BOARD_ID=1
 
 # OpenAI API
 OPENAI_API_KEY=your_openai_api_key
 
-# Optional: Other AI providers
-GROQ_API_KEY=your_groq_api_key
-ANTHROPIC_API_KEY=your_anthropic_api_key
-GEMINI_API_KEY=your_gemini_api_key
+# GitHub Configuration
+GITHUB_TOKEN=your_github_token
+GITHUB_REPO=revhawk/jira_coder
 
 # LangSmith Tracing (Optional - for monitoring and debugging)
 LANGCHAIN_TRACING_V2=true
@@ -55,20 +54,31 @@ LANGCHAIN_PROJECT=jira-code-generator
 
 ### 3. Run Jira Coder
 
-**Option A: Web UI (Recommended)**
+**Option A: Web UI Dashboard (Recommended)**
 ```bash
-streamlit run jira_coder_ui.py
+PYTHONPATH=.deps:. streamlit run jira_coder_ui.py
 ```
-Then open http://localhost:8501 in your browser.
+Open [http://localhost:8501](http://localhost:8501) in your browser. Features live app interactive view and an archive launcher.
 
-**Option B: Command Line**
+**Option B: Podman / Docker Container**
 ```bash
-# Option 1: Direct script
-python3 main.py
-
-# Option 2: Using launcher (from project directory)
-./jira_coder
+podman-compose up --build
+# OR
+docker-compose up --build
 ```
+
+**Option C: Command Line**
+```bash
+PYTHONPATH=.deps:. python3 main.py
+```
+
+### 4. Deploy Live to Streamlit Cloud
+
+1. Push latest code to GitHub: `PYTHONPATH=.deps:. python3 push_to_github.py`
+2. Open [https://share.streamlit.io/deploy](https://share.streamlit.io/deploy)
+3. Set **Repository**: `revhawk/jira_coder`, **Branch**: `main`, **Main file path**: `jira_coder_ui.py` (or `app.py`).
+4. Click **Deploy!**
+
 
 Choose mode:
 1. **TDD Workflow** - Standalone module from single ticket
