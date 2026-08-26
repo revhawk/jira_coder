@@ -64,12 +64,27 @@ with st.sidebar.expander("🔑 API Credentials & Settings", expanded=not has_val
     else:
         st.warning("⚠️ No OpenAI API key detected. Please enter your key below to generate code.")
         
-    st.caption("Provide your own API keys for this session:")
-    user_openai_key = st.text_input("OpenAI API Key", value=current_key, type="password")
-    user_jira_base = st.text_input("Jira Base URL", value=current_jira_base)
-    user_jira_email = st.text_input("Jira Email", value=current_jira_email)
-    user_jira_token = st.text_input("Jira API Token", value=current_jira_token, type="password")
-    user_jira_proj = st.text_input("Default Jira Project", value=current_jira_proj)
+    st.caption("Enter credentials to override session (Leave blank to use loaded environment keys):")
+    user_openai_key = st.text_input(
+        "OpenAI API Key",
+        value="",
+        placeholder="•••••••••••••••• (Active)" if has_valid_creds else "sk-proj-...",
+        type="password"
+    )
+    user_jira_base = st.text_input("Jira Base URL", value=current_jira_base if current_jira_base else "https://reg-hawkins.atlassian.net")
+    user_jira_email = st.text_input(
+        "Jira Email",
+        value="",
+        placeholder=current_jira_email if current_jira_email else "user@example.com"
+    )
+    user_jira_token = st.text_input(
+        "Jira API Token",
+        value="",
+        placeholder="•••••••••••••••• (Active)" if has_valid_creds else "ATATT...",
+        type="password"
+    )
+    user_jira_proj = st.text_input("Default Jira Project", value=current_jira_proj if current_jira_proj else "KAN")
+
 
     
     if st.button("💾 Apply Session Credentials"):
