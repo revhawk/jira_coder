@@ -33,8 +33,17 @@ if 'active_code_set_label' not in st.session_state:
 st.title("🔧 Jira Coder")
 st.markdown("AI-powered code generation & Interactive App Viewer")
 
+# Detect whether owner credentials exist in environment
+current_key = os.getenv("OPENAI_API_KEY", "")
+has_valid_creds = bool(current_key and not current_key.startswith("your_"))
+
 # Sidebar - Credentials Manager
-with st.sidebar.expander("🔑 API Credentials & Settings", expanded=False):
+with st.sidebar.expander("🔑 API Credentials & Settings", expanded=not has_valid_creds):
+    if has_valid_creds:
+        st.success("✅ Owner credentials loaded from environment")
+    else:
+        st.warning("⚠️ No OpenAI API key detected. Please enter your key below to generate code.")
+        
     st.caption("Provide your own API keys for this session:")
     user_openai_key = st.text_input("OpenAI API Key", value=os.getenv("OPENAI_API_KEY", ""), type="password")
     user_jira_base = st.text_input("Jira Base URL", value=os.getenv("JIRA_BASE", "https://reg-hawkins.atlassian.net"))
@@ -53,9 +62,12 @@ with st.sidebar.expander("🔑 API Credentials & Settings", expanded=False):
             os.environ["JIRA_API_TOKEN"] = user_jira_token
         if user_jira_proj:
             os.environ["JIRA_PROJECT_KEY"] = user_jira_proj
+        st.session_state.custom_credentials_applied = True
         st.success("✅ Credentials updated for session!")
+        st.rerun()
 
 st.sidebar.markdown("---")
+
 
 # Sidebar - Code Set Launcher
 st.sidebar.header("🚀 Code Set Launcher")
@@ -137,6 +149,10 @@ with tab1:
 
 with tab2:
     st.header("Generator Dashboard & Settings")
+    
+    if not has_valid_creds:
+        st.warning("⚠️ **API Credentials Required**: No OpenAI or Jira API key detected for this session. Please open **'🔑 API Credentials & Settings'** in the sidebar to enter your own API key to generate code.")
+
     
     # Sidebar - Mode Selection inside Tab 2 context
     st.sidebar.header("Mode Selection")
