@@ -33,6 +33,30 @@ if 'active_code_set_label' not in st.session_state:
 st.title("🔧 Jira Coder")
 st.markdown("AI-powered code generation & Interactive App Viewer")
 
+# Sidebar - Credentials Manager
+with st.sidebar.expander("🔑 API Credentials & Settings", expanded=False):
+    st.caption("Provide your own API keys for this session:")
+    user_openai_key = st.text_input("OpenAI API Key", value=os.getenv("OPENAI_API_KEY", ""), type="password")
+    user_jira_base = st.text_input("Jira Base URL", value=os.getenv("JIRA_BASE", "https://reg-hawkins.atlassian.net"))
+    user_jira_email = st.text_input("Jira Email", value=os.getenv("JIRA_EMAIL", ""))
+    user_jira_token = st.text_input("Jira API Token", value=os.getenv("JIRA_API_TOKEN", ""), type="password")
+    user_jira_proj = st.text_input("Default Jira Project", value=os.getenv("JIRA_PROJECT_KEY", "KAN"))
+    
+    if st.button("💾 Apply Session Credentials"):
+        if user_openai_key:
+            os.environ["OPENAI_API_KEY"] = user_openai_key
+        if user_jira_base:
+            os.environ["JIRA_BASE"] = user_jira_base
+        if user_jira_email:
+            os.environ["JIRA_EMAIL"] = user_jira_email
+        if user_jira_token:
+            os.environ["JIRA_API_TOKEN"] = user_jira_token
+        if user_jira_proj:
+            os.environ["JIRA_PROJECT_KEY"] = user_jira_proj
+        st.success("✅ Credentials updated for session!")
+
+st.sidebar.markdown("---")
+
 # Sidebar - Code Set Launcher
 st.sidebar.header("🚀 Code Set Launcher")
 
