@@ -1,0 +1,29 @@
+# Secrets & Environment
+.env
+*.env
+.env.*
+
+# Dependencies & Virtual environments
+.deps/
+.venv/
+env/
+venv/
+ENV/
+.langgraph/
+
+# Python cache & artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+.report.json
+
+# IDEs & System files
+.vscode/
+.idea/
+.DS_Store
+
+# Temporary logs
+/logs/
