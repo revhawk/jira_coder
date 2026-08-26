@@ -303,6 +303,15 @@ with tab2:
 # Quick Actions Footer in Sidebar
 st.sidebar.markdown("---")
 st.sidebar.markdown("### Quick Actions")
+if st.sidebar.button("🐙 Create GitHub Pull Request"):
+    from agents.github_pr_agent import create_pull_request_for_tickets
+    with st.sidebar.spinner("Creating GitHub PR..."):
+        pr_link = create_pull_request_for_tickets("KAN", ["KAN-1", "KAN-2", "KAN-3"])
+        if pr_link:
+            st.sidebar.success(f"✅ PR Created: [View PR →]({pr_link})")
+        else:
+            st.sidebar.info("PR creation checked (see log details)")
+
 if st.sidebar.button("🗂️ Open Archive Folder"):
     st.sidebar.code("archive/", language="text")
 if st.sidebar.button("📊 View Test Results"):
@@ -313,3 +322,4 @@ if st.sidebar.button("📊 View Test Results"):
             st.sidebar.json(report)
     else:
         st.sidebar.info("No test results yet")
+
