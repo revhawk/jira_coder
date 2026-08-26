@@ -33,23 +33,44 @@ if 'active_code_set_label' not in st.session_state:
 st.title("🔧 Jira Coder")
 st.markdown("AI-powered code generation & Interactive App Viewer")
 
-# Detect whether owner credentials exist in environment
-current_key = os.getenv("OPENAI_API_KEY", "")
+def get_env_or_secret(key_name: str, default: str = "") -> str:
+    """Helper to check os.getenv (.env) and st.secrets (Streamlit Cloud)."""
+    val = os.getenv(key_name, "")
+    if val and not str(val).startswith("your_"):
+        return str(val)
+    try:
+        if hasattr(st, "secrets") and key_name in st.secrets:
+            sec_val = st.secrets[key_name]
+            if sec_val and not str(sec_val).startswith("your_"):
+                os.environ[key_name] = str(sec_val)
+                return str(sec_val)
+    except Exception:
+        pass
+    return default
+
+# Detect whether owner credentials exist in environment or Streamlit Secrets
+current_key = get_env_or_secret("OPENAI_API_KEY")
+current_jira_base = get_env_or_secret("JIRA_BASE", "https://reg-hawkins.atlassian.net")
+current_jira_email = get_env_or_secret("JIRA_EMAIL")
+current_jira_token = get_env_or_secret("JIRA_API_TOKEN")
+current_jira_proj = get_env_or_secret("JIRA_PROJECT_KEY", "KAN")
+
 has_valid_creds = bool(current_key and not current_key.startswith("your_"))
 
 # Sidebar - Credentials Manager
 with st.sidebar.expander("🔑 API Credentials & Settings", expanded=not has_valid_creds):
     if has_valid_creds:
-        st.success("✅ Owner credentials loaded from environment")
+        st.success("✅ Owner credentials loaded from environment / secrets")
     else:
         st.warning("⚠️ No OpenAI API key detected. Please enter your key below to generate code.")
         
     st.caption("Provide your own API keys for this session:")
-    user_openai_key = st.text_input("OpenAI API Key", value=os.getenv("OPENAI_API_KEY", ""), type="password")
-    user_jira_base = st.text_input("Jira Base URL", value=os.getenv("JIRA_BASE", "https://reg-hawkins.atlassian.net"))
-    user_jira_email = st.text_input("Jira Email", value=os.getenv("JIRA_EMAIL", ""))
-    user_jira_token = st.text_input("Jira API Token", value=os.getenv("JIRA_API_TOKEN", ""), type="password")
-    user_jira_proj = st.text_input("Default Jira Project", value=os.getenv("JIRA_PROJECT_KEY", "KAN"))
+    user_openai_key = st.text_input("OpenAI API Key", value=current_key, type="password")
+    user_jira_base = st.text_input("Jira Base URL", value=current_jira_base)
+    user_jira_email = st.text_input("Jira Email", value=current_jira_email)
+    user_jira_token = st.text_input("Jira API Token", value=current_jira_token, type="password")
+    user_jira_proj = st.text_input("Default Jira Project", value=current_jira_proj)
+
     
     if st.button("💾 Apply Session Credentials"):
         if user_openai_key:
